@@ -35,7 +35,13 @@ function formatDateTime(date) {
   return `${year}-${month}-${day} ${hours}${minutes}${seconds}`;
 }
 
+function getFileName(pathname) {
+  const paths = pathname.split("/");
+  return paths[paths.length - 1];
+}
+
 module.exports = {
   checkFilesExist,
   formatDateTime,
+  getFileName,
 };

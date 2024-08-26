@@ -2,7 +2,11 @@
 "use strict";
 
 const inquirer = require("inquirer");
-const { checkFilesExist, formatDateTime } = require("./scripts/utils");
+const {
+  checkFilesExist,
+  formatDateTime,
+  getFileName,
+} = require("./scripts/utils");
 const Logger = require("./scripts/logger");
 const fs = require("fs");
 const path = require("path");
@@ -75,21 +79,31 @@ function resolveUrl() {
   const { file, addType } = Store.config;
   if (addType === "append") {
     const date = formatDateTime(new Date());
-    console.log(date);
+    Logger.info(date);
     Store.setDate(date);
   }
 
   const regex =
     file === "package-lock.json"
-      ? /(?<="resolved": ").+(?=",)/g
-      : /(?<=resolved ").+(?=")/g;
+      ? /(?<="resolved": ").+(?=.tgz)/g
+      : /(?<=resolved ").+(?=.tgz)/g;
 
   const filePath = path.join(process.cwd(), file);
 
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) throw err;
-    const urls = data.match(regex);
-    Store.setFiles(urls);
+    let urls = data.match(regex).map((item) => item + ".tgz");
+    const realUrls = [];
+    const fileNames = [];
+    urls.map((url) => {
+      const fileName = getFileName(url);
+      if (!fileNames.includes(fileName)) {
+        fileNames.push(fileName);
+        realUrls.push(url);
+      }
+    });
+
+    Store.setFiles(realUrls);
     downloadFiles();
   });
 }

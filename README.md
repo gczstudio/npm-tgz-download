@@ -1,6 +1,6 @@
 # npm-tgz-downloader
 
-Download npm-tgz by package-lock.json or yarn.lock
+Download npm-tgz by package-lock.json or yarn.lock,Support for public and private libraries
 
 ## install
 

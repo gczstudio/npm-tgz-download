@@ -9,6 +9,11 @@ const cliProgress = require("cli-progress");
 // note: you have to install this dependency manually since it's not required by cli-progress
 const colors = require("ansi-colors");
 
+const { getFileName } = require("./utils");
+
+const parallelNum = 50;
+let currentIndex = 50;
+
 // create new progress bar
 const progressBar = new cliProgress.SingleBar({
   format:
@@ -19,11 +24,6 @@ const progressBar = new cliProgress.SingleBar({
   barIncompleteChar: "\u2591",
   hideCursor: true,
 });
-
-function getFileName(pathname) {
-  const paths = pathname.split("/");
-  return paths[paths.length - 1];
-}
 
 function isExistDirOrFile(path) {
   try {
@@ -50,8 +50,7 @@ function binaryParser(res, callback) {
 /**
  * Delete the partially written files
  */
-function deleteFile() {
-  const path = Store.addType === "append" ? dateFilePath : filePath;
+function deleteFile(path) {
   fs.unlink(path, (err) => {
     if (err) throw err;
   });
@@ -66,6 +65,11 @@ function updateFinishCount() {
   if (Store.finishCount === Store.total) {
     progressBar.stop();
   }
+
+  currentIndex++;
+  if (currentIndex <= Store.total) {
+    download(Store.files[currentIndex - 1], Store.config);
+  }
 }
 
 /**
@@ -76,7 +80,7 @@ async function downloadFiles() {
   const { files, config } = Store;
   progressBar.start(Store.total, 0);
   if (config.downloadType === "parallel") {
-    for (let file of files) {
+    for (let file of files.slice(0, parallelNum)) {
       download(file, config);
     }
   } else {
@@ -99,6 +103,7 @@ function download(file, config) {
   const filePath = path.join(fileDir, filename);
   const dateDirPath = path.join(fileDir, Store.date);
   const dateFilePath = path.join(dateDirPath, filename);
+  const realPath = Store.addType === "append" ? dateFilePath : filePath;
   /**
    * 1.Judge whether the file exists, it exists, do not repeat the request
    * 2.Determine whether the npmtgz directory exists, and is created
@@ -144,24 +149,24 @@ function download(file, config) {
       .get(file)
       .set(
         "Authorization",
-        "Basic " + Buffer.from(`${username}:${password}}`).toString("base64")
+        "Basic " + Buffer.from(`${username}:${password}`).toString("base64")
       )
       .buffer(false) // Prohibit the buffer conversion
       .parse(binaryParser)
       .on("error", (err) => {
         Logger.error(err);
-        deleteFile();
+        deleteFile(realPath);
         reject(err);
       })
       .pipe(fileStream)
       .on("finish", () => {
-        resolve(file);
         updateFinishCount();
+        resolve(file);
       });
 
     fileStream.on("error", (err) => {
       // Error writing file
-      deleteFile();
+      deleteFile(realPath);
       Logger.error("save file error: ", err.message);
       reject(err);
     });
