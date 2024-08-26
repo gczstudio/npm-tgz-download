@@ -18,6 +18,10 @@
   ],
   "author": "gcz",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gczstudio/npm-tgz-download.git"
+  },
   "dependencies": {
     "ansi-colors": "^4.1.3",
     "chalk": "^4.0.0",
