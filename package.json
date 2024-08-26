@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "download npm-tgz by package-lock.json or yarn.lock",
   "main": "index.js",
+  "bin": {
+    "npm-download-tgz": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +17,7 @@
     "yarn.lock"
   ],
   "author": "gcz",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "ansi-colors": "^4.1.3",
     "chalk": "^4.0.0",
