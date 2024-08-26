@@ -1,0 +1,25 @@
+{
+  "name": "npm-tgz-download",
+  "version": "1.0.0",
+  "description": "download npm-tgz by package-lock.json or yarn.lock",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "npm",
+    "tgz",
+    "package-lock",
+    "yarn.lock"
+  ],
+  "author": "gcz",
+  "license": "ISC",
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "chalk": "^4.0.0",
+    "commander": "^12.1.0",
+    "inquirer": "^10.1.8",
+    "superagent": "^10.0.2"
+  }
+}
