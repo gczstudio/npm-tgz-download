@@ -1,7 +1,7 @@
 {
   "name": "npm-tgz-downloader",
   "version": "1.1.0",
-  "description": "download npm-tgz by package-lock.json or yarn.lock",
+  "description": "Download npm-tgz by package-lock.json or yarn.lock,Support for public and private libraries",
   "main": "index.js",
   "bin": {
     "npm-download-tgz": "index.js"
@@ -14,7 +14,10 @@
     "npm",
     "tgz",
     "package-lock",
-    "yarn.lock"
+    "yarn.lock",
+    "registry",
+    "public",
+    "private"
   ],
   "author": "gcz",
   "license": "MIT",
